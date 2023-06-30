@@ -1,0 +1,86 @@
+import os
+from dotenv import load_dotenv
+
+from langchain.embeddings import OpenAIEmbeddings, HuggingFaceInstructEmbeddings
+
+from langchain.text_splitter import CharacterTextSplitter
+
+from langchain.vectorstores import Chroma, FAISS
+
+from PyPDF2 import PdfReader
+
+load_dotenv()
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+class VectorDBConstructor:
+
+    def __init__(self, data_source, pdf_path, embedding, db):
+        self.data_source = data_source
+        self.pdf_path = pdf_path
+        self.embedding = embedding
+        self.db = db
+
+    def create_pdf_list(self, pdf_path):
+
+        pdf_docs = []
+
+        print(f"\nPreparing pdf list from {self.pdf_path}")
+        for path in os.listdir(self.pdf_path):
+            if path.endswith(".pdf"):
+                pdf_docs.append(self.pdf_path+"/"+path)
+
+        return pdf_docs
+
+    def read_pdf(self, pdf_docs, data_source):
+        text=""
+        print(f"\nReading pdf documents from {self.pdf_path}...")
+        i = 1
+        for pdf in pdf_docs:
+            print(f"Reading {pdf} ({i}/{len(pdf_docs)})")
+            pdf_reader = PdfReader(pdf)
+            for page in pdf_reader.pages:
+                page.extract_text()
+                text += page.extract_text()
+            i += 1
+
+        print("\nWriting text to file...")
+
+        with open(f"./backend/{self.data_source}_text.txt", "a") as f:
+            f.write(text)
+
+        return text
+
+    def chunk_pdf(self, text):
+        print("\nChunking text...")
+
+        text_splitter = CharacterTextSplitter(
+            separator = "\n",
+            chunk_size = 1000,  # Need to variablise
+            chunk_overlap = 200, # Need to variablise
+            length_function = len
+        )
+
+        chunks = text_splitter.split_text(text)
+
+        return chunks
+
+    def create_vectorDB(self, chunks, data_source, embedding, db):
+        print("Creating search vectorDB...")
+
+        if self.embedding == "openai": # Need to variablise
+            embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
+
+        if self.embedding == "hugging": # Need to variablise
+            embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
+
+        if self.db == "chroma": # Need to variablise
+            persist_directory = "./backend/"+self.data_source+"/db_chroma_"+self.embedding
+            print("Instanciating persistence ChromaDB instance...")
+            vectordb = Chroma.from_texts(chunks, embeddings, metadata=[{"source": str(i)} for i in range(len(chunks))], persist_directory=persist_directory)
+            print("--- FIN ---")
+
+        if self.db == "faiss": # Need to variablise
+            vectordb = FAISS.from_texts(docs, embeddings=embeddings)
+            vectordb.save_local("faiss_"+self.data_source+"_"+self.embedding)
+            print("--- FIN ---")
