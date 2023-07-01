@@ -33,23 +33,29 @@ class VectorDBConstructor:
         return pdf_docs
 
     def read_pdf(self, pdf_docs, data_source):
-        text=""
-        print(f"\nReading pdf documents from {self.pdf_path}...")
-        i = 1
-        for pdf in pdf_docs:
-            print(f"Reading {pdf} ({i}/{len(pdf_docs)})")
-            pdf_reader = PdfReader(pdf)
-            for page in pdf_reader.pages:
-                page.extract_text()
-                text += page.extract_text()
-            i += 1
 
-        print("\nWriting text to file...")
+        if f"./backend/{self.data_source}_text.txt":
+            print("Using pre-generated text file...")
+            text = f"./backend/{self.data_source}_text.txt"
+            return text
+        else:
+            text=""
+            print(f"\nReading pdf documents from {self.pdf_path}...")
+            i = 1
+            for pdf in pdf_docs:
+                print(f"Reading {pdf} ({i}/{len(pdf_docs)})")
+                pdf_reader = PdfReader(pdf)
+                for page in pdf_reader.pages:
+                    page.extract_text()
+                    text += page.extract_text()
+                i += 1
 
-        with open(f"./backend/{self.data_source}_text.txt", "a") as f:
-            f.write(text)
+            print("\nWriting text to file...")
 
-        return text
+            with open(f"./backend/{self.data_source}_text.txt", "a") as f:
+                f.write(text)
+
+            return text
 
     def chunk_pdf(self, text):
         print("\nChunking text...")
@@ -68,19 +74,19 @@ class VectorDBConstructor:
     def create_vectorDB(self, chunks, data_source, embedding, db):
         print("Creating search vectorDB...")
 
-        if self.embedding == "openai": # Need to variablise
+        if self.embedding == "openai": 
             embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
 
-        if self.embedding == "hugging": # Need to variablise
+        if self.embedding == "hugging":
             embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
 
-        if self.db == "chroma": # Need to variablise
-            persist_directory = "./backend/"+self.data_source+"/db_chroma_"+self.embedding
+        if self.db == "chroma": 
+            persist_directory = "./backend/db/chroma_"+self.data_source+self.embedding
             print("Instanciating persistence ChromaDB instance...")
             vectordb = Chroma.from_texts(chunks, embeddings, metadata=[{"source": str(i)} for i in range(len(chunks))], persist_directory=persist_directory)
             print("--- FIN ---")
 
-        if self.db == "faiss": # Need to variablise
-            vectordb = FAISS.from_texts(docs, embeddings=embeddings)
-            vectordb.save_local("faiss_"+self.data_source+"_"+self.embedding)
+        if self.db == "faiss": 
+            vectordb = FAISS.from_texts(chunks, embeddings)
+            vectordb.save_local("./backend/db/faiss_"+self.data_source+"_"+self.embedding)
             print("--- FIN ---")

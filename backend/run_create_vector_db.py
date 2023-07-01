@@ -2,8 +2,8 @@ from vectorDB import VectorDBConstructor
 
 data_source = "basler" # Need to variablise as an input arg from the command line
 pdf_path = "../pdf/"+data_source
-embedding = "openai" # Need to variablise as an input arg from the command line
-db = "chroma" # Need to variablise as an input arg from the command line
+embedding = "hugging" # Choices are "openai" or "hugging"; Need to variablise as an input arg from the command line
+db = "faiss" # Choices are "chroma" or "faiss"; Need to variablise as an input arg from the command line
 
 if __name__ == "__main__":
     vector_db_constructor = VectorDBConstructor(
