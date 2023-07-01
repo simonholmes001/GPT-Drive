@@ -82,11 +82,12 @@ class VectorDBConstructor:
 
         if self.db == "chroma": 
             persist_directory = "./backend/db/chroma_"+self.data_source+self.embedding
-            print("Instanciating persistence ChromaDB instance...")
+            print("Instantiating persistence ChromaDB instance...")
             vectordb = Chroma.from_texts(chunks, embeddings, metadata=[{"source": str(i)} for i in range(len(chunks))], persist_directory=persist_directory)
             print("--- FIN ---")
 
         if self.db == "faiss": 
+            print("Instantiating persistence FAISS instance...")
             vectordb = FAISS.from_texts(chunks, embeddings)
             vectordb.save_local("./backend/db/faiss_"+self.data_source+"_"+self.embedding)
             print("--- FIN ---")
