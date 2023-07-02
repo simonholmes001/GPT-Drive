@@ -6,6 +6,7 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import Chroma, FAISS
 
 from PyPDF2 import PdfReader
+import camelot
 
 load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")

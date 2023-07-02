@@ -13,9 +13,7 @@ chain_parameters:
   memory: ConversationBufferMemory(memory_key="chat_history", return_messages=True)
   model: ["mosaicml-30B", "openai", "ChatOpenAI"] # -> TO DO: make into a command line variable
   
-embedding:
-  openai: ["openai", "text-embedding-ada-002"]
-  hugging: ["hugging", "hkunlp/instructor-xl"]
+embedding: ["openai", "hugging"]
 
 vectorDB: ["chroma", "faiss"]
 

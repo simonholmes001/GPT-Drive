@@ -7,7 +7,8 @@ class Prompt:
 
     def set_query(self):
         query="""
-        When does a favor give an appearance of impropriety?
+        What is a regional compliance officer? 
+        Please provide as much information as possible and be VERY COMPLETE with your answer
         """
         return query
     
@@ -15,6 +16,11 @@ class Prompt:
         prompt_template = """
             You are an assitant for a large company. The company has many core procedure documents, and you use these core procedure documents
             when answering employee queries. These core procedure docuemnts are provided to you as CONTEXT.
+            Please provide as much information as possible.
+
+            If you do not know the answer, just say I do not knowm DO NOT TRY AND MAKE THINGS UP!
+            
+            Use bullet points as much as possible.
             
             ---------------------------------------------------------
             CONTEXT: {context}

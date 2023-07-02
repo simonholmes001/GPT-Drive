@@ -4,7 +4,7 @@ from backend.set_up import vectorDB
 data_source = "faurecia" # Need to variablise as an input arg from the command line
 pdf_path = "../pdf/"+data_source
 embedding = "hugging" # Choices are "openai" or "hugging"; Need to variablise as an input arg from the command line
-db = "faiss" # Choices are "chroma" or "faiss"; Need to variablise as an input arg from the command line
+db = "chroma" # Choices are "chroma" or "faiss"; Need to variablise as an input arg from the command line
 
 if __name__ == "__main__":
     vector_db_constructor = vectorDB.VectorDBConstructor(

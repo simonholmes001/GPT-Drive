@@ -39,4 +39,5 @@ class Retriever:
 
         docs = retriever.get_relevant_documents(self.query)
 
+        # return retriever
         return docs

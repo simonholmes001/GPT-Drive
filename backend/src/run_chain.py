@@ -11,6 +11,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.memory import ConversationBufferMemory
 from langchain.embeddings import OpenAIEmbeddings, HuggingFaceInstructEmbeddings
+from langchain.chains import ConversationalRetrievalChain
 
 from backend.set_up import chain_setup, mosaicml_setup, prompt_setup, retriever_setup
 
@@ -25,13 +26,12 @@ model_type = data["mosaicml"]["model_type"]
 task_type = data["mosaicml"]["task_types"]
 
 device = data["device"]
-model = data["chain_parameters"]["model"][2]
+model = data["chain_parameters"]["model"][2] # 0 mosaicml, 1 openai, 2 ChatOpenAI
 openai_model = data["OpenAI"]["gpt3_models"][2]
 memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
 chain_type = data["chain_parameters"]["chain_types"][0]
-embedding_model_name = data["embedding"]["openai"][0] # 0 name, 1 model // openai of hugging
-embedding_model = data["embedding"]["openai"][1] # 0 name, 1 model
-vectorDB = data["vectorDB"][1] # 0 chroma, 1 FAISS
+embedding_model_name = data["embedding"][0] # 0 openai, 1 hugging
+vectorDB = data["vectorDB"][0] # 0 chroma, 1 FAISS
 data_source = data["data_source"][0] # 0 faurecia, 1 basler, 2 autosar
 search_kwargs= data["search_kwargs"][1]
 search_type= data["search_type"][1]
@@ -69,7 +69,7 @@ if __name__ == "__main__":
         docs = retriever.chroma(data_source=data_source, embedding=embedding, embedding_model_name=embedding_model_name, 
         search_kwargs=search_kwargs, search_type=search_type, query=query)
     if vectorDB == "faiss":
-        docs = retriever.faiss(data_source=data_source, embedding=embedding_model, embedding_model_name=embedding_model_name, 
+        docs = retriever.faiss(data_source=data_source, embedding=embedding, embedding_model_name=embedding_model_name, 
         search_kwargs=search_kwargs, search_type=search_type, query=query)
 
     print("\n")
@@ -84,6 +84,9 @@ if __name__ == "__main__":
     print(f"Query: {query}")
     print("\n")
     chain.run(input_documents=docs, question=query, return_only_outputs=True, memory=memory, verbose=True)
+    # qa = ConversationalRetrievalChain.from_llm(llm=llm, retriever=docs, memory=memory)
+    # result = qa({"question": query})
+    # print(result["answer"])
     print("\n")
     print("--- FIN ---")
     print("\n")
