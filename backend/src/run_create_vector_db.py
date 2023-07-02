@@ -1,12 +1,13 @@
-from vectorDB import VectorDBConstructor
+# export PYTHONPATH=.
+from backend.set_up import vectorDB
 
-data_source = "basler" # Need to variablise as an input arg from the command line
+data_source = "faurecia" # Need to variablise as an input arg from the command line
 pdf_path = "../pdf/"+data_source
 embedding = "hugging" # Choices are "openai" or "hugging"; Need to variablise as an input arg from the command line
 db = "faiss" # Choices are "chroma" or "faiss"; Need to variablise as an input arg from the command line
 
 if __name__ == "__main__":
-    vector_db_constructor = VectorDBConstructor(
+    vector_db_constructor = vectorDB.VectorDBConstructor(
         data_source=data_source,
         pdf_path=pdf_path, 
         embedding=embedding, 
