@@ -1,0 +1,26 @@
+device: f"cuda:{cuda.current_device()}" if cuda.is_available() else "cpu"
+
+mosaicml:
+  model_type: ["mosaicml/mpt-30b-chat"]
+  task_types: ["text_generation"]
+
+OpenAI:
+  gpt3_models: ["gpt-3.5-turbo-16k-0613", "gpt-3.5-turbo-0613", "gpt-3.5-turbo", "gpt-3.5-turbo-16k", "text-davinci-002"]
+  gpt4_models: ["gpt-4", "gpt-4-0613", "gpt-4-32k", "gpt-4-32k-0613"]
+
+chain_parameters:
+  chain_types: ["stuff", "refine", "map_reduce", "map_rerank"]
+  memory: ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+  model: ["mosaicml-30B", "openai", "ChatOpenAI"] # -> TO DO: make into a command line variable
+  
+embedding:
+  openai: ["openai", "text-embedding-ada-002"]
+  hugging: ["hugging", "hkunlp/instructor-xl"]
+
+vectorDB: ["chroma", "faiss"]
+
+data_source: ["faurecia", "basler", "autosar"]
+
+search_kwargs: [{"k": 5}, {"score_threshold": .3}]
+
+search_type: ["mmr", "similarity_score_threshold"]
