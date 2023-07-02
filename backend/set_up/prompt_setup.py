@@ -7,7 +7,7 @@ class Prompt:
 
     def set_query(self):
         query="""
-        What is a regional compliance officer? 
+        Am I allowed to use my own car for a business trip? 
         Please provide as much information as possible and be VERY COMPLETE with your answer
         """
         return query
