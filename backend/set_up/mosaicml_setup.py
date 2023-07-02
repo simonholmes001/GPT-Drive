@@ -33,7 +33,7 @@ class MosaicmlSetUp:
             ]
         ]
 
-        stop_token_ids = [torch.LongTensor(x).to(device) for x in stop_token_ids]
+        stop_token_ids = [torch.LongTensor(x).to(self.device) for x in stop_token_ids]
 
         class StopOnTokens(StoppingCriteria):
             def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs) -> bool:
