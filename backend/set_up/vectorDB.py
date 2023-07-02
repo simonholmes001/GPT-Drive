@@ -2,15 +2,12 @@ import os
 from dotenv import load_dotenv
 
 from langchain.embeddings import OpenAIEmbeddings, HuggingFaceInstructEmbeddings
-
 from langchain.text_splitter import CharacterTextSplitter
-
 from langchain.vectorstores import Chroma, FAISS
 
 from PyPDF2 import PdfReader
 
 load_dotenv()
-
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 class VectorDBConstructor:
@@ -34,7 +31,7 @@ class VectorDBConstructor:
 
     def read_pdf(self, pdf_docs, data_source):
 
-        if f"./backend/{self.data_source}_text.txt":
+        if os.path.isfile(f"./backend/{self.data_source}_text.txt"):
             print("Using pre-generated text file...")
             text = f"./backend/{self.data_source}_text.txt"
             return text
@@ -81,7 +78,7 @@ class VectorDBConstructor:
             embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
 
         if self.db == "chroma": 
-            persist_directory = "./backend/db/chroma_"+self.data_source+self.embedding
+            persist_directory = "./backend/db/"+self.data_source+"_chroma_"+self.embedding
             print("Instantiating persistence ChromaDB instance...")
             vectordb = Chroma.from_texts(chunks, embeddings, metadata=[{"source": str(i)} for i in range(len(chunks))], persist_directory=persist_directory)
             print("--- FIN ---")
@@ -89,5 +86,5 @@ class VectorDBConstructor:
         if self.db == "faiss": 
             print("Instantiating persistence FAISS instance...")
             vectordb = FAISS.from_texts(chunks, embeddings)
-            vectordb.save_local("./backend/db/faiss_"+self.data_source+"_"+self.embedding)
+            vectordb.save_local("./backend/db/"+self.data_source+"_faiss_"+self.embedding)
             print("--- FIN ---")
