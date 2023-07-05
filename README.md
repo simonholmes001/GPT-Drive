@@ -11,7 +11,8 @@
 [ ] Other prompt types:
 - chat prompt template
 - custom prompt templates (https://python.langchain.com/docs/modules/model_io/prompts/prompt_templates/custom_prompt_template) 
-- few shot prompts for chat models, with alternating human/AI messages❗ (https://python.langchain.com/docs/modules/model_io/prompts/prompt_templates/few_shot_examples_chat)
+- few shot prompts for chat models, with alternating human/AI messages❗ (https://python.langchain.com/docs/modules/model_io/prompts/prompt_templates/few_shot_examples_chat) :heavy_check_mark:
+- message prompt templates
 
 ## Agents
 
@@ -20,6 +21,8 @@
 ## Chaining
 
 [ ] How to chain multiple chains together
+
+[ ] LLMChain class
 
 ## Chat Memory
 
